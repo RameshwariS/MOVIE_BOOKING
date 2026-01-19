@@ -6,6 +6,11 @@ const mongoose  = require('mongoose')
 //load env
 dotenv.config();
 
+//importing routes
+const movieRoute =  require('./routes/movie.routes');
+
+
+
 const PORT = process.env.PORT || 8000
 const app = express()
 
@@ -15,6 +20,8 @@ const app = express()
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+
+movieRoute(app);
 
 app.get('/home',(req,res)=>{
     res.send("HI")
