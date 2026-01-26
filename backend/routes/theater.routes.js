@@ -7,6 +7,7 @@ const routes = (app) => {
     app.get('/mba/api/v1/theaters/:id', theaterController.getTheater);
     app.put('/mba/api/v1/theaters/:id', theaterController.updateTheater);
     app.delete('/mba/api/v1/theaters/:id', theaterController.deleteTheater);
+    app.patch('/mba/api/v1/theaters/:id/movies', theaterController.updateMoviesInTheater);
 }
 
 module.exports = routes;

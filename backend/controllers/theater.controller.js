@@ -1,4 +1,3 @@
-const Theater = require('../models/theater.model');
 const theaterServices = require('../services/theater.service');
 
 const createTheater = async(req,res)=>{
@@ -76,6 +75,24 @@ const deleteTheater = async(req,res)=>{
     })  ;
 }
 
+const updateMoviesInTheater = async (req,res) =>{
+ const result = await theaterServices.updateMoviesInTheater(
+    req.params.id,
+    req.body.movieIds,
+    req.body.insert);
+ if(result.err){
+    return res.status(result.code).json({
+        err: result.err,
+        data: {},
+        success: false,
+        msg: "something went wrong",
+    })};
+    return res.status(200).json({
+        err:{},
+        data: result,
+        msg: "Movies updated in theater successfully",
+        success:true
+    })
+ }
 
-
-module.exports = {createTheater,getTheater,updateTheater,deleteTheater}
+module.exports = {createTheater,getTheater,updateTheater,deleteTheater,updateMoviesInTheater};

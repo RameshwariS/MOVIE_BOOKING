@@ -12,6 +12,7 @@ const theaterSchema = new mongoose.Schema({
         type: [mongoose.Schema.Types.ObjectId],
         ref: 'Movie',
         required: false,
+     //    unique: true,
    }
 }, { timestamps: true });
 
