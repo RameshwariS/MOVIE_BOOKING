@@ -95,4 +95,20 @@ const updateMoviesInTheater = async (req,res) =>{
     })
  }
 
-module.exports = {createTheater,getTheater,updateTheater,deleteTheater,updateMoviesInTheater};
+
+ const getMoviesInTheater = async (req, res) => {
+   const result = await theaterServices.getMoviesInTheater(req.params.id);
+   if (result.err) {
+     return res.status(result.code).json({
+       err: result.err,
+     });
+   }
+   return res.status(200).json({
+     err: {},
+     data: result,
+     msg: "Movies fetched successfully",
+     success: true,
+   });
+ };
+
+module.exports = {createTheater,getTheater,updateTheater,deleteTheater,updateMoviesInTheater,getMoviesInTheater};

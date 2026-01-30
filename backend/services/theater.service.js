@@ -18,7 +18,7 @@ const getTheater = async(req,res)=>{
    try {
      
         const theater = Theater.findById(req.params.id);
-        return theater;
+        return theater; 
    } catch (error) {
     console.log("error in theater creation service",error);
     throw error;
@@ -53,6 +53,23 @@ const deleteTheater = async(req,res)=>{
    }
 }
 
+const getMoviesInTheater = async (theaterId) => {
+  try {
+    const theater = await Theater.findById(theaterId).populate("movies");
+    return theater.movies;
+  } catch (err) {
+    if (err.name == "TypeError") {
+      return {
+        code: 404,
+        err: "No theatre found for the given id",
+      };
+    }
+    else {
+      console.log("Error is", err);
+      throw err;
+    }
+  }
+};
 
 const updateMoviesInTheater = async (theaterId,movieIds,insert) =>{
   try{
@@ -91,5 +108,5 @@ const updateMoviesInTheater = async (theaterId,movieIds,insert) =>{
   }
 }
 module.exports = {
-    createTheater,getTheater  ,upadteTheater , deleteTheater ,updateMoviesInTheater
+    createTheater,getTheater  ,upadteTheater , deleteTheater ,updateMoviesInTheater,getMoviesInTheater
 }
