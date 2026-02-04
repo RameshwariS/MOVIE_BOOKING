@@ -28,7 +28,7 @@ const validateMovieCreateRequest = async (req, res, next) => {
     }
 
     // validate the movie trailer url
-    if(!req.body.trailerUrl) {
+    if(!req.body.trailerURL) {
         badRequestResponse.err = "The trailerUrl of the movie is not present in the request";
         return res.status(400).json(badRequestResponse);
     }

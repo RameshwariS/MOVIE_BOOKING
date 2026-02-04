@@ -34,6 +34,11 @@ const movieSchema = new mongoose.Schema({
         required :true,
         default : "RELEASED"
     }, 
+    theaters :{ 
+        type: [mongoose.Schema.Types.ObjectId],
+        ref : 'Theater',
+        required : false,
+    }
 },{timestamps:true}); //timestamps gives created n updated at automatically
 
 const movie= mongoose.model("Movie",movieSchema);
