@@ -107,6 +107,23 @@ const updateMoviesInTheater = async (theaterId,movieIds,insert) =>{
         throw err;
   }
 }
+
+const checkMovie = async (theaterId) => {
+  try {
+    const mvs = await Theater.findById(theaterId).populate("movies");
+    if(mvs.movies.length > 0){
+       return true;
+    }
+    else{
+       return false;
+    }
+    
+  } catch (error) {
+   console.log("Error is", err);
+        throw err;
+  }
+}
+
 module.exports = {
-    createTheater,getTheater  ,upadteTheater , deleteTheater ,updateMoviesInTheater,getMoviesInTheater
+    createTheater,getTheater  ,upadteTheater , deleteTheater ,updateMoviesInTheater,getMoviesInTheater,checkMovie
 }

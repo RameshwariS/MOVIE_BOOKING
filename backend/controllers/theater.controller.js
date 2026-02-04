@@ -111,4 +111,8 @@ const updateMoviesInTheater = async (req,res) =>{
    });
  };
 
+ const checkMovie = async (req,res)=>{
+    const res = await theaterServices.checkMovie(req.params.theaterId);
+    return res;
+ }
 module.exports = {createTheater,getTheater,updateTheater,deleteTheater,updateMoviesInTheater,getMoviesInTheater};
