@@ -5,10 +5,15 @@ const theaterSchema = new mongoose.Schema({
     address: { type: String, required: true },
     city: { type: String, required: true },
     pinCode: { type: Number, required: true },
-    description: { type: Number, required: false },
+    description: { type: String, required: false },
     rating: { type: Number, required: false },
     isopen: { type: Boolean, default: true },
-   
+   movies :{
+        type: [mongoose.Schema.Types.ObjectId],
+        ref: 'Movie',
+        required: false,
+     //    unique: true,
+   }
 }, { timestamps: true });
 
 const Theater = mongoose.model('Theater', theaterSchema);

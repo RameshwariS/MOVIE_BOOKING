@@ -8,7 +8,7 @@ dotenv.config();
 
 //importing routes
 const movieRoute =  require('./routes/movie.routes');
-
+const theaterRoute = require('./routes/theater.routes');
 
 
 const PORT = process.env.PORT || 8000
@@ -22,6 +22,7 @@ app.use(express.urlencoded({ extended: true }));
 
 
 movieRoute(app);
+theaterRoute(app);
 
 app.get('/home',(req,res)=>{
     res.send("HI")
