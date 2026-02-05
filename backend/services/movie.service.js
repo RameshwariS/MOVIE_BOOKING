@@ -21,7 +21,7 @@ const createMovie = async (body) => {
     if (!res) {
         return { err: "Movie not created", code: 500 };
     }
-    return { code: 200 };
+    return res;
 }
 
 const updateMovie = async (id, body) => {
