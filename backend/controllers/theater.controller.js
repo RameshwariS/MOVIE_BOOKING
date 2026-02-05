@@ -1,7 +1,7 @@
 const theaterServices = require('../services/theater.service');
 
-const createTheater = async(req,res)=>{
- const result = await  theaterServices.createTheater(req,res);
+const createTheater = async (req, res) => {
+ const result = await theaterServices.createTheater(req.body);
  if(result.err){
     return res.status(result.code).json({
         err: result.err,
@@ -19,8 +19,8 @@ const createTheater = async(req,res)=>{
 }
 
 
-const getTheater = async(req,res)=>{
- const result = await  theaterServices.getTheater(req,res);
+const getTheater = async (req, res) => {
+ const result = await theaterServices.getTheater(req.params.id);
  if(result.err){
     return res.status(result.code).json({
         err: result.err,
@@ -37,9 +37,27 @@ const getTheater = async(req,res)=>{
     })  ;
 }
 
+const getTheaters = async (req, res) => {
+ const result = await theaterServices.fetchTheaters(req.query);
+ if (result.err) {
+   return res.status(result.code).json({
+     err: result.err,
+     data: {},
+     msg: "something went wrong",
+     success: false,
+   });
+ }
+ return res.status(200).json({
+   err: {},
+   data: result,
+   msg: "Theaters fetched successfully",
+   success: true,
+ });
+};
 
-const updateTheater = async(req,res)=>{
- const result = await  theaterServices.upadteTheater(req,res);
+
+const updateTheater = async (req, res) => {
+ const result = await theaterServices.updateTheater(req.params.id, req.body);
  if(result.err){
     return res.status(result.code).json({
         err: result.err,
@@ -57,8 +75,8 @@ const updateTheater = async(req,res)=>{
 }
 
 
-const deleteTheater = async(req,res)=>{
- const result = await  theaterServices.deleteTheater(req,res);
+const deleteTheater = async (req, res) => {
+ const result = await theaterServices.deleteTheater(req.params.id);
  if(result.err){
     return res.status(result.code).json({
         err: result.err,
@@ -75,11 +93,12 @@ const deleteTheater = async(req,res)=>{
     })  ;
 }
 
-const updateMoviesInTheater = async (req,res) =>{
+const updateMoviesInTheater = async (req, res) => {
  const result = await theaterServices.updateMoviesInTheater(
-    req.params.id,
-    req.body.movieIds,
-    req.body.insert);
+   req.params.id,
+   req.body.movieIds,
+   req.body.insert
+ );
  if(result.err){
     return res.status(result.code).json({
         err: result.err,
@@ -111,8 +130,17 @@ const updateMoviesInTheater = async (req,res) =>{
    });
  };
 
- const checkMovie = async (req,res)=>{
-    const res = await theaterServices.checkMovie(req.params.theaterId);
-    return res;
- }
-module.exports = {createTheater,getTheater,updateTheater,deleteTheater,updateMoviesInTheater,getMoviesInTheater};
+const checkMovie = async (req, res) => {
+  const result = await theaterServices.checkMovie(req.params.theaterId);
+  return result;
+};
+
+module.exports = {
+  createTheater,
+  getTheater,
+  getTheaters,
+  updateTheater,
+  deleteTheater,
+  updateMoviesInTheater,
+  getMoviesInTheater,
+};
