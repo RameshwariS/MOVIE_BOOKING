@@ -25,18 +25,15 @@ const userSchema = new mongoose.Schema({
     }
 },{timestamps:true});
 
-userSchema.pre("save", async function(next){
-    try {
-        //generate salt
-        // salt is random val added to hash to make it secure
-        const salt = await bcrypt.genSalt(10);
-        //hash the passwd using the salt
-        const hashedPassword = await bcrypt.hash(this.password,salt);
-        this.password = hashedPassword;
-        next();
-    } catch (error) {
-        next(error);
-    }
+userSchema.pre("save", async function(){
+    // Only hash if the password was created/updated
+    if (!this.isModified("password")) return;
+    //generate salt
+    // salt is random val added to hash to make it secure
+    const salt = await bcrypt.genSalt(10);
+    //hash the passwd using the salt
+    const hashedPassword = await bcrypt.hash(this.password,salt);
+    this.password = hashedPassword;
 });
 
 const User = mongoose.model("User", userSchema);

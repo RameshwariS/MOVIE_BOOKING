@@ -20,7 +20,7 @@ export default function Register(){
   }
 
   return (
-    <div>
+    <div className="page">
       <h2>Register</h2>
       {err && <div className="error">{err}</div>}
       <form onSubmit={submit} className="form">
@@ -30,7 +30,7 @@ export default function Register(){
         <input value={email} onChange={e=>setEmail(e.target.value)} type="email" required />
         <label>Password</label>
         <input value={password} onChange={e=>setPassword(e.target.value)} type="password" required />
-        <button>Register</button>
+        <button className="btn">Register</button>
       </form>
     </div>
   )

@@ -16,12 +16,14 @@ export default function Login(){
       const { token } = res.data.data || res.data // service returns token in data or directly
       // handle both shapes
       const tok = token || (res.data && res.data.token) || (res.data && res.data.data && res.data.data.token)
+      const user = (res.data && res.data.data && res.data.data.user) || (res.data && res.data.user)
       if (!tok) {
         // fallback: some responses wrap differently
         // try to get token from res.data
         throw new Error('Login failed: token missing')
       }
       localStorage.setItem('token', tok)
+      if (user) localStorage.setItem('user', JSON.stringify(user))
       navigate('/')
     }catch(err){
       setErr(err.response?.data?.err || err.message)
@@ -29,7 +31,7 @@ export default function Login(){
   }
 
   return (
-    <div>
+    <div className="page">
       <h2>Login</h2>
       {err && <div className="error">{err}</div>}
       <form onSubmit={submit} className="form">
@@ -37,7 +39,7 @@ export default function Login(){
         <input value={email} onChange={e=>setEmail(e.target.value)} type="email" required />
         <label>Password</label>
         <input value={password} onChange={e=>setPassword(e.target.value)} type="password" required />
-        <button>Login</button>
+        <button className="btn">Login</button>
       </form>
     </div>
   )

@@ -1,4 +1,7 @@
+const mongoose = require('mongoose');
 const Theater = require('../models/theater.model');
+
+const escapeRegex = (value) => String(value).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
 const createTheater = async (body) => {
   try {
@@ -12,6 +15,9 @@ const createTheater = async (body) => {
 
 const getTheater = async (id) => {
   try {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return { err: "Invalid theater id", code: 400 };
+    }
     const theater = await Theater.findById(id);
     if (!theater) return { err: "Theater not found", code: 404 };
     return theater;
@@ -46,8 +52,18 @@ const deleteTheater = async (id) => {
 const fetchTheaters = async (filter) => {
   try {
     const query = {};
-    if (filter && filter.city) query.city = filter.city;
-    if (filter && filter.name) query.name = filter.name;
+    const name = filter && filter.name ? String(filter.name).trim() : '';
+    const city = filter && filter.city ? String(filter.city).trim() : '';
+    const q = filter && filter.q ? String(filter.q).trim() : '';
+
+    if (q) {
+      const re = new RegExp(escapeRegex(q), 'i');
+      query.$or = [{ name: re }, { city: re }];
+    } else {
+      if (name) query.name = new RegExp(escapeRegex(name), 'i');
+      if (city) query.city = new RegExp(escapeRegex(city), 'i');
+    }
+
     const theaters = await Theater.find(query);
     return theaters;
   } catch (error) {
