@@ -7,6 +7,7 @@ export default function MovieForm({ edit }){
   const [description, setDescription] = useState('')
   const [casts, setCasts] = useState('')
   const [trailerURL, setTrailerURL] = useState('')
+  const [posterURL, setPosterURL] = useState('')
   const [releaseDate, setReleaseDate] = useState('')
   const [director, setDirector] = useState('')
   const [err, setErr] = useState('')
@@ -22,6 +23,7 @@ export default function MovieForm({ edit }){
         setDescription(m.description || '')
         setCasts((m.casts || []).join(', '))
         setTrailerURL(m.trailerURL || '')
+        setPosterURL(m.posterURL || '')
         setReleaseDate(m.releaseDate ? m.releaseDate.split('T')[0] : '')
         setDirector(m.director || '')
       }).catch(e=> setErr(e.response?.data?.err || e.message))
@@ -32,7 +34,13 @@ export default function MovieForm({ edit }){
     e.preventDefault()
     setErr('')
     const payload = {
-      name, description, casts: casts.split(',').map(s=>s.trim()).filter(Boolean), trailerURL, releaseDate, director
+      name,
+      description,
+      casts: casts.split(',').map(s=>s.trim()).filter(Boolean),
+      trailerURL,
+      posterURL,
+      releaseDate,
+      director
     }
     try{
       if(edit){
@@ -47,7 +55,7 @@ export default function MovieForm({ edit }){
   }
 
   return (
-    <div>
+    <div className="page">
       <h2>{edit ? 'Edit Movie' : 'Create Movie'}</h2>
       {err && <div className="error">{err}</div>}
       <form className="form" onSubmit={submit}>
@@ -59,11 +67,13 @@ export default function MovieForm({ edit }){
         <input value={casts} onChange={e=>setCasts(e.target.value)} />
         <label>Trailer URL</label>
         <input value={trailerURL} onChange={e=>setTrailerURL(e.target.value)} />
+        <label>Poster URL</label>
+        <input value={posterURL} onChange={e=>setPosterURL(e.target.value)} />
         <label>Release Date</label>
         <input type="date" value={releaseDate} onChange={e=>setReleaseDate(e.target.value)} />
         <label>Director</label>
         <input value={director} onChange={e=>setDirector(e.target.value)} />
-        <button>{edit ? 'Update' : 'Create'}</button>
+        <button className="btn">{edit ? 'Update' : 'Create'}</button>
       </form>
     </div>
   )

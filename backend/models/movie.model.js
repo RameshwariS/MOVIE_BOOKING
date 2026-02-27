@@ -2,45 +2,53 @@ const mongoose = require('mongoose')
 const { release } = require('os')
 
 const movieSchema = new mongoose.Schema({
-    name :{
-        type:String,
-        required :true,
+    name: {
+        type: String,
+        required: true,
     },
-    description:{
-        type:String,
-        required :true,
+    description: {
+        type: String,
+        required: true,
     },
-    trailerURL :{
-        type : String, // will store the location
+    trailerURL: {
+        type: String, // will store the location
     },
-    casts :{
-        type : [String]
+    posterURL: {
+        type: String, // optional poster image URL
     },
-    language :{
-        type : [String],
-        required :true,
-        default :["ENG"]
+    casts: {
+        type: [String]
     },
-    releaseDate :{
-        type :String,
-        required :true
+    language: {
+        type: [String],
+        required: true,
+        default: ["ENG"]
     },
-    director :{
-         type :String,
-        required :true
+    genre: {
+        type: [String],
+        required: true,
+        default: ["ACTION"]
     },
-    releaseStatus :{
-        type :String,
-        required :true,
-        default : "RELEASED"
-    }, 
-    theaters :{ 
+    releaseDate: {
+        type: String,
+        required: true
+    },
+    director: {
+        type: String,
+        required: true
+    },
+    releaseStatus: {
+        type: String,
+        required: true,
+        default: "RELEASED"
+    },
+    theaters: {
         type: [mongoose.Schema.Types.ObjectId],
-        ref : 'Theater',
-        required : false,
+        ref: 'Theater',
+        required: false,
     }
-},{timestamps:true}); //timestamps gives created n updated at automatically
+}, { timestamps: true }); //timestamps gives created n updated at automatically
 
-const movie= mongoose.model("Movie",movieSchema);
+const movie = mongoose.model("Movie", movieSchema);
 
 module.exports = movie
