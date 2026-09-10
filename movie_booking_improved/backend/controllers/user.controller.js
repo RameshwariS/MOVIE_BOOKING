@@ -154,4 +154,33 @@ const deleteUser = async (req, res) => {
   }
 };
 
-module.exports = { registerUser, loginUser, getUser, getUsers, updateUser, deleteUser };
+const googleAuth = async (req, res) => {
+  try {
+    const { idToken } = req.body;
+    if (!idToken) {
+      return res.status(400).json({ err: 'idToken is required', data: {}, msg: 'bad request', success: false });
+    }
+
+    const response = await userService.googleAuthUser(idToken);
+    if (response.err) {
+      return res.status(response.code).json({
+        err: response.err,
+        data: {},
+        msg: 'google authentication failed',
+        success: false,
+      });
+    }
+
+    return res.status(200).json({
+      err: {},
+      data: response,
+      msg: 'google login successful',
+      success: true,
+    });
+  } catch (err) {
+    console.log(err, 'in google auth');
+    return res.status(500).json({ err: err.message, data: {}, msg: 'something went wrong', success: false });
+  }
+};
+
+module.exports = { registerUser, loginUser, getUser, getUsers, updateUser, deleteUser, googleAuth };

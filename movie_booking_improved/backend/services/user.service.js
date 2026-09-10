@@ -72,4 +72,47 @@ const deleteUser = async (id) => {
   return { code: 200 };
 };
 
-module.exports = { registerUser, loginUser, getUserById, fetchUsers, updateUser, deleteUser };
+const googleAuthUser = async (idToken) => {
+  const { OAuth2Client } = require('google-auth-library');
+  const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+
+  // Verify the Google ID token
+  let payload;
+  try {
+    const ticket = await client.verifyIdToken({
+      idToken,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    });
+    payload = ticket.getPayload();
+  } catch (e) {
+    return { err: 'Invalid Google token', code: 401 };
+  }
+
+  const { email, name, picture } = payload;
+  if (!email) return { err: 'No email in Google token', code: 400 };
+
+  // Upsert: find existing user or create a new one
+  let user = await User.findOne({ email });
+  if (!user) {
+    // Google users get a random unusable password so the schema validator passes
+    const placeholder = require('crypto').randomBytes(32).toString('hex');
+    const salt = await bcrypt.genSalt(10);
+    const hashedPlaceholder = await bcrypt.hash(placeholder, salt);
+    user = await User.create({
+      name: name || email.split('@')[0],
+      email,
+      password: hashedPlaceholder,
+      role: 'USER',
+    });
+  }
+
+  const token = jwt.sign(
+    { id: user._id.toString(), role: user.role },
+    process.env.JWT_SECRET || 'secret',
+    { expiresIn: '1d' }
+  );
+
+  return { token, user: { id: user._id, name: user.name, email: user.email, role: user.role } };
+};
+
+module.exports = { registerUser, loginUser, getUserById, fetchUsers, updateUser, deleteUser, googleAuthUser };
