@@ -26,12 +26,26 @@ const reviewRoute = require("./routes/review.routes");
 const PORT = process.env.PORT || 8000;
 const app = express();
 
-// CORS — support comma-separated list of origins via env
+// CORS — support comma-separated list of origins (or * to allow all) via env
 const allowedOrigins = process.env.CORS_ORIGINS
   ? process.env.CORS_ORIGINS.split(",").map((o) => o.trim())
   : ["http://localhost:5173", "http://127.0.0.1:5173"];
 
-app.use(cors({ origin: allowedOrigins, credentials: true }));
+const allowAllOrigins = allowedOrigins.includes("*");
+
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      // Allow requests with no origin (curl, Postman, server-to-server)
+      if (!origin) return callback(null, true);
+      if (allowAllOrigins || allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+      return callback(new Error(`CORS: origin ${origin} not allowed`));
+    },
+    credentials: true,
+  })
+);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
