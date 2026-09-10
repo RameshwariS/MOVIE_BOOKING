@@ -7,6 +7,7 @@ const routes = (app) => {
   // auth
   app.post('/mba/api/v1/users/register', userController.registerUser);
   app.post('/mba/api/v1/users/login', userController.loginUser);
+  app.post('/mba/api/v1/users/google-auth', userController.googleAuth);
 
   // protected user operations
   app.get('/mba/api/v1/users/:id', verifyToken, userController.getUser);
