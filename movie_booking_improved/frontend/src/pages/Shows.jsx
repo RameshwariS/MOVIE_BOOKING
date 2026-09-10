@@ -50,6 +50,7 @@ export default function Shows() {
 
   // Filter shows by selected date
   const filteredShows = (shows || []).filter(s => {
+    if (!s?.startTime) return false
     const showDate = new Date(s.startTime).toISOString().split('T')[0]
     return showDate === selectedDate
   })
