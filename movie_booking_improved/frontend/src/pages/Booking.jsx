@@ -62,7 +62,7 @@ export default function Booking() {
                 <div>
                     <h2>Select Your Seats</h2>
                     <p className="muted">{show.movie?.name} @ {show.theater?.name}</p>
-                    <p className="small-text muted">{new Date(show.startTime).toLocaleString()}</p>
+                    <p className="small-text muted">{show.startTime ? new Date(show.startTime).toLocaleString() : '—'}</p>
                 </div>
                 <Link to={`/shows?movie=${show.movie?._id || show.movie?.id}`} className="link">Back to showtimes</Link>
             </div>
