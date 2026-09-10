@@ -515,6 +515,86 @@ input, select, textarea { font-family: inherit; }
 .not-found { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 60vh; text-align: center; }
 .not-found-icon { font-size: 72px; font-weight: 900; color: var(--primary); opacity: 0.15; font-family: 'Fraunces', serif; line-height: 1; margin-bottom: 16px; }
 
+/* ── Google OAuth ─────────────────────────────────────────────────────────── */
+.google-auth-section {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 10px;
+  margin-bottom: 4px;
+}
+.google-btn-wrapper {
+  width: 100%;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.2s;
+}
+/* Make the GIS-rendered iframe/button fill the container */
+.google-btn-wrapper > div,
+.google-btn-wrapper iframe {
+  width: 100% !important;
+  border-radius: var(--radius-sm) !important;
+}
+.google-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 6px 0;
+}
+.google-unconfigured {
+  border: 1.5px dashed var(--border);
+  border-radius: var(--radius-sm);
+  padding: 14px 16px;
+  text-align: center;
+  background: var(--bg);
+}
+.google-unconfigured-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: var(--text-muted);
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 6px;
+}
+.google-unconfigured-hint {
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+.google-unconfigured-hint code {
+  background: var(--primary-dim);
+  color: var(--primary);
+  padding: 1px 5px;
+  border-radius: 4px;
+  font-size: 11px;
+}
+
+/* ── Auth divider ─────────────────────────────────────────────────────────── */
+.auth-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 8px 0;
+  color: var(--text-muted);
+  font-size: 13px;
+}
+.auth-divider::before,
+.auth-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+.auth-divider span {
+  white-space: nowrap;
+  padding: 0 4px;
+}
+
 /* ── Animations ───────────────────────────────────────────────────────────── */
 @keyframes fadeInUp {
   from { opacity: 0; transform: translateY(18px); }
