@@ -1,18 +1,18 @@
 const movieController = require('../controllers/movie.controller');
 const movieMiddlewares = require('../middlewares/movie.middlewares');
-const { verifyToken, requireAdmin } = require('../middlewares/auth.middleware');
+const { verifyToken, requireAdmin, requireAdminOrOwner } = require('../middlewares/auth.middleware');
 
 const routes = (app) =>{
     app.post(
         '/mba/api/v1/movies',
         verifyToken,
-        requireAdmin,
+        requireAdminOrOwner,
         movieMiddlewares.validateMovieCreateRequest,
         movieController.createMovie) // adding the mv
       app.delete(
         '/mba/api/v1/movies/:id',
         verifyToken,
-        requireAdmin,
+        requireAdminOrOwner,
         movieController.deleteMovie
     );
      app.get(
@@ -24,7 +24,7 @@ const routes = (app) =>{
     app.put(
         '/mba/api/v1/movies/:id',
         verifyToken,
-        requireAdmin,
+        requireAdminOrOwner,
         movieMiddlewares.validateMovieCreateRequest,
         movieController.updateMovie
     );

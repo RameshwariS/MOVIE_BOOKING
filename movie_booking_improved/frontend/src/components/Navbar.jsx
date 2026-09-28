@@ -48,6 +48,7 @@ export default function Navbar() {
         {token && <NavLink to="/my-bookings">My Bookings</NavLink>}
         {owner && <NavLink to="/owner" className="nav-pill">Dashboard</NavLink>}
         {!token && <NavLink to="/login">Sign In</NavLink>}
+        {!token && <NavLink to="/owner-login" className="nav-pill">Theater Owner</NavLink>}
         {!token && (
           <Link to="/register" className="btn btn-sm" onClick={() => setMenuOpen(false)}>
             Get Started
@@ -80,7 +81,9 @@ export default function Navbar() {
           {token && <NavLink to="/my-bookings">My Bookings</NavLink>}
           {owner && <NavLink to="/owner">Owner Dashboard</NavLink>}
           {!token && <NavLink to="/login">Sign In</NavLink>}
+          {!token && <NavLink to="/owner-login">Theater Owner Sign In</NavLink>}
           {!token && <NavLink to="/register">Register</NavLink>}
+          {!token && <NavLink to="/owner-register">Theater Owner Register</NavLink>}
           {token && <button className="link-button" onClick={logout}>Sign Out</button>}
         </div>
       )}

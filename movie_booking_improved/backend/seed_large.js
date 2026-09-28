@@ -15,11 +15,22 @@ dotenv.config();
 const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
 const pickMany = (arr, n) => [...arr].sort(() => Math.random() - 0.5).slice(0, n);
 const randInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
-const futureDate = (daysAhead, hour) => {
-  const d = new Date();
-  d.setDate(d.getDate() + daysAhead);
-  d.setHours(hour, 0, 0, 0);
-  return d;
+const datesInCurrentMonth = () => {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = now.getMonth();
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+  return Array.from({ length: daysInMonth }, (_, index) => {
+    const date = new Date(year, month, index + 1);
+    date.setHours(0, 0, 0, 0);
+    return date;
+  });
+};
+const showDateTime = (date, hour) => {
+  const start = new Date(date);
+  start.setHours(hour, 0, 0, 0);
+  return start;
 };
 const pastDate = (daysAgo, hour) => {
   const d = new Date();
@@ -358,31 +369,20 @@ const seedDB = async () => {
     const showsToInsert = [];
     const releasedMovies = createdMovies.filter(m => m.releaseStatus === 'RELEASED');
 
+    // Generate every listed showtime for every valid day in the current month.
+    // The number of days is calculated from the calendar, so February and
+    // 30/31-day months are all handled correctly.
+    const monthDates = datesInCurrentMonth();
+    const now = new Date();
+
     for (const movie of releasedMovies) {
       const theaterSubset = pickMany(createdTheaters, randInt(4, 8));
       for (const theater of theaterSubset) {
-        // Past shows -> COMPLETED
-        for (let day = 7; day >= 1; day--) {
-          const hour = showTimes[Math.floor(Math.random() * showTimes.length)];
-          const start = pastDate(day, hour);
-          const total = seatOptions[Math.floor(Math.random() * seatOptions.length)];
-          showsToInsert.push({
-            movie: movie._id,
-            theater: theater._id,
-            startTime: start,
-            endTime: new Date(start.getTime() + randInt(100, 180) * 60000),
-            price: prices[Math.floor(Math.random() * prices.length)],
-            totalSeats: total,
-            bookedSeats: generateSeats(randInt(10, 40)),
-            status: 'COMPLETED',
-          });
-        }
-        // Future shows -> SCHEDULED
-        for (let day = 0; day <= 7; day++) {
-          const selectedTimes = pickMany(showTimes, randInt(2, 4));
-          for (const hour of selectedTimes) {
-            const start = futureDate(day, hour);
+        for (const date of monthDates) {
+          for (const hour of showTimes) {
+            const start = showDateTime(date, hour);
             const total = seatOptions[Math.floor(Math.random() * seatOptions.length)];
+            const isPast = start < now;
             showsToInsert.push({
               movie: movie._id,
               theater: theater._id,
@@ -390,8 +390,8 @@ const seedDB = async () => {
               endTime: new Date(start.getTime() + randInt(100, 180) * 60000),
               price: prices[Math.floor(Math.random() * prices.length)],
               totalSeats: total,
-              bookedSeats: generateSeats(randInt(0, 20)),
-              status: 'SCHEDULED',
+              bookedSeats: generateSeats(randInt(isPast ? 10 : 0, isPast ? 40 : 20)),
+              status: isPast ? 'COMPLETED' : 'SCHEDULED',
             });
           }
         }

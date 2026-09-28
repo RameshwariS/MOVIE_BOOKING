@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import api from '../api'
-import { isAdmin, isAuthenticated } from '../utils/auth'
+import { isAdmin, isAdminOrOwner, isAuthenticated } from '../utils/auth'
 import { getPosterUrl } from '../utils/media'
 import { toast } from '../utils/toast'
 import Spinner from '../components/Spinner'
@@ -19,6 +19,7 @@ export default function MoviesList() {
   const [deleting, setDeleting] = useState(null)
   const navigate = useNavigate()
   const admin = isAdmin()
+  const canManage = isAdminOrOwner()
   const authed = isAuthenticated()
 
   const fetchMovies = useCallback(async () => {
@@ -65,7 +66,7 @@ export default function MoviesList() {
           <h2>Movies</h2>
           <p className="muted">{movies.length} title{movies.length !== 1 ? 's' : ''} found</p>
         </div>
-        {admin && <Link to="/movies/new" className="btn">+ Add Movie</Link>}
+        {canManage && <Link to="/movies/new" className="btn">+ Add Movie</Link>}
       </div>
 
       {/* Filters */}
@@ -108,7 +109,7 @@ export default function MoviesList() {
           icon="🎬"
           title="No movies found"
           subtitle={search || genre || status ? 'Try adjusting your filters' : 'No movies have been added yet'}
-          action={admin && <Link to="/movies/new" className="btn">Add First Movie</Link>}
+          action={canManage && <Link to="/movies/new" className="btn">Add First Movie</Link>}
         />
       ) : (
         <div className="movies-grid">
@@ -155,7 +156,7 @@ export default function MoviesList() {
                   {!authed && (
                     <Link className="btn btn-ghost btn-sm" to="/login">Sign in to book</Link>
                   )}
-                  {admin && (
+                  {canManage && (
                     <>
                       <button
                         className="btn btn-light btn-sm"

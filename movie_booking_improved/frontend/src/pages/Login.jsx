@@ -192,6 +192,9 @@ export default function Login() {
         <p className="auth-footer">
           Don't have an account? <Link to="/register" className="link">Create one</Link>
         </p>
+        <p className="auth-footer" style={{ marginTop: '0.25rem' }}>
+          Theater owner? <Link to="/owner-login" className="link">Sign in to your dashboard →</Link>
+        </p>
       </div>
     </div>
   )

@@ -3,6 +3,8 @@ import { Routes, Route } from 'react-router-dom'
 import Home from './pages/Home'
 import Login from './pages/Login'
 import Register from './pages/Register'
+import OwnerLogin from './pages/OwnerLogin'
+import OwnerRegister from './pages/OwnerRegister'
 import MoviesList from './pages/MoviesList'
 import MovieForm from './pages/MovieForm'
 import TheatersList from './pages/TheatersList'
@@ -25,9 +27,14 @@ export default function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
 
+          {/* Theater owner auth routes */}
+          <Route path="/owner-login" element={<OwnerLogin />} />
+          <Route path="/owner-register" element={<OwnerRegister />} />
+
           <Route path="/movies" element={<MoviesList />} />
-          <Route path="/movies/new" element={<ProtectedRoute requireAdmin><MovieForm /></ProtectedRoute>} />
-          <Route path="/movies/edit/:id" element={<ProtectedRoute requireAdmin><MovieForm edit /></ProtectedRoute>} />
+          {/* Allow both admins and theater owners to manage movies */}
+          <Route path="/movies/new" element={<ProtectedRoute requireRole={['ADMIN', 'THEATER_OWNER', 'OWNER']}><MovieForm /></ProtectedRoute>} />
+          <Route path="/movies/edit/:id" element={<ProtectedRoute requireRole={['ADMIN', 'THEATER_OWNER', 'OWNER']}><MovieForm edit /></ProtectedRoute>} />
 
           <Route path="/theaters" element={<TheatersList />} />
           <Route path="/shows" element={<Shows />} />
