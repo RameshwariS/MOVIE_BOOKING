@@ -47,11 +47,12 @@ export default function OwnerDashboard() {
       setTheaters(tRes.data.data || tRes.data || [])
       setShows(sRes.data.data || sRes.data || [])
       const bookings = bRes.data.data || bRes.data || []
+      const confirmedBookings = bookings.filter(b => b.status === 'CONFIRMED')
       setStats({
         totalBookings: bookings.length,
-        totalRevenue: bookings.filter(b => b.paymentStatus === 'PAID').reduce((s, b) => s + b.totalPrice, 0),
+        totalRevenue: bookings.filter(b => b.paymentStatus === 'PAID').reduce((s, b) => s + Number(b.totalPrice || 0), 0),
         pendingPayments: bookings.filter(b => b.paymentStatus === 'PENDING').length,
-        confirmedBookings: bookings.filter(b => b.status === 'CONFIRMED').length,
+        confirmedBookings: confirmedBookings.reduce((count, b) => count + (b.seats?.length || 0), 0),
       })
     } catch (e) {
       toast.error(e.response?.data?.err || 'Failed to load data')
@@ -60,7 +61,14 @@ export default function OwnerDashboard() {
     }
   }
 
-  useEffect(() => { fetchAll() }, [])
+  useEffect(() => {
+    fetchAll()
+    // A customer may complete payment in another tab while this dashboard is
+    // open. Refresh the sales cards when the owner returns to this tab.
+    const refreshOnFocus = () => fetchAll()
+    window.addEventListener('focus', refreshOnFocus)
+    return () => window.removeEventListener('focus', refreshOnFocus)
+  }, [])
 
   // ── Show helpers ──────────────────────────────────────────────────────────
   const updateShow = (k, v) => setForm(f => ({ ...f, [k]: v }))
@@ -232,7 +240,7 @@ export default function OwnerDashboard() {
       <div className="stats-row">
         <StatCard icon="🎟️" label="Total Bookings" value={stats.totalBookings} />
         <StatCard icon="💰" label="Revenue (Paid)" value={`₹${stats.totalRevenue.toLocaleString()}`} />
-        <StatCard icon="✅" label="Confirmed" value={stats.confirmedBookings} />
+        <StatCard icon="✅" label="Confirmed Tickets" value={stats.confirmedBookings} />
         <StatCard icon="⏳" label="Pending Payments" value={stats.pendingPayments} />
       </div>
 

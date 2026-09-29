@@ -35,7 +35,11 @@ const getBooking = async (req, res) => {
 const getBookings = async (req, res) => {
   try {
     const query = { ...req.query };
-    if (req.user.role !== 'ADMIN') {
+    // The owner dashboard needs bookings across customers to calculate sales
+    // for the shows and theaters it manages. Regular users still only see
+    // their own bookings.
+    const canViewAllBookings = ['ADMIN', 'OWNER', 'THEATER_OWNER'].includes(req.user.role);
+    if (!canViewAllBookings) {
       query.user = req.user.id;
     }
     const response = await bookingService.fetchBookings(query);
